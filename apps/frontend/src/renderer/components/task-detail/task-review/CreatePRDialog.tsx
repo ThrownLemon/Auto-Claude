@@ -60,13 +60,15 @@ export function CreatePRDialog({
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">{t('pr.target')}</span>
-              <span className="font-mono">{worktreeStatus.baseBranch || 'main'}</span>
+              <span className="font-mono">{worktreeStatus.baseBranch || '-'}</span>
             </div>
           </div>
         )}
 
         {result?.error && (
-          <div className="text-sm text-destructive">{result.error}</div>
+          <div className="text-sm text-destructive">
+            {t('pr.result.errorPrefix', { defaultValue: 'Error' })}: {result.error}
+          </div>
         )}
 
         {result?.prUrl && (

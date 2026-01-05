@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   GitBranch,
   RefreshCw,
@@ -47,6 +48,7 @@ interface WorktreesProps {
 }
 
 export function Worktrees({ projectId }: WorktreesProps) {
+  const { t } = useTranslation('taskReview');
   const projects = useProjectStore((state) => state.projects);
   const selectedProject = projects.find((p) => p.id === projectId);
   const tasks = useTaskStore((state) => state.tasks);
@@ -84,10 +86,10 @@ export function Worktrees({ projectId }: WorktreesProps) {
       if (result.success && result.data) {
         setWorktrees(result.data.worktrees);
       } else {
-        setError(result.error || 'Failed to load worktrees');
+        setError(result.error || t('worktrees.errors.failedToLoad'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load worktrees');
+      setError(err instanceof Error ? err.message : t('worktrees.errors.failedToLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -172,7 +174,7 @@ export function Worktrees({ projectId }: WorktreesProps) {
 
     const task = findTaskForWorktree(prWorktree.specName);
     if (!task) {
-      setError('Task not found for this worktree');
+      setError(t('worktrees.errors.taskNotFound'));
       return;
     }
 
@@ -186,13 +188,13 @@ export function Worktrees({ projectId }: WorktreesProps) {
       } else {
         setPRResult({
           success: false,
-          error: result.error || 'Failed to create PR'
+          error: result.error || t('worktrees.errors.failedToCreate')
         });
       }
     } catch (err) {
       setPRResult({
         success: false,
-        error: err instanceof Error ? err.message : 'Failed to create PR'
+        error: err instanceof Error ? err.message : t('worktrees.errors.failedToCreate')
       });
     } finally {
       setIsCreatingPR(false);
@@ -537,10 +539,10 @@ export function Worktrees({ projectId }: WorktreesProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <GitPullRequest className="h-5 w-5" />
-              Create Pull Request
+              {t('pr.title')}
             </DialogTitle>
             <DialogDescription>
-              Push branch and create a GitHub pull request.
+              {t('pr.description')}
             </DialogDescription>
           </DialogHeader>
 
@@ -548,14 +550,14 @@ export function Worktrees({ projectId }: WorktreesProps) {
             <div className="py-4">
               <div className="rounded-lg bg-muted p-4 text-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Source Branch</span>
+                  <span className="text-muted-foreground">{t('pr.source')}</span>
                   <span className="font-mono text-info">{prWorktree.branch}</span>
                 </div>
                 <div className="flex items-center justify-center">
                   <ChevronRight className="h-4 w-4 text-muted-foreground rotate-90" />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Target Branch</span>
+                  <span className="text-muted-foreground">{t('pr.target')}</span>
                   <span className="font-mono">{prWorktree.baseBranch}</span>
                 </div>
                 <div className="border-t border-border pt-3 mt-3">
@@ -585,12 +587,14 @@ export function Worktrees({ projectId }: WorktreesProps) {
                   )}
                   <div className="flex-1">
                     <p className={`font-medium ${prResult.success ? 'text-success' : 'text-destructive'}`}>
-                      {prResult.success 
-                        ? (prResult.alreadyExists ? 'PR Already Exists' : 'PR Created Successfully')
-                        : 'PR Creation Failed'}
+                      {prResult.success
+                        ? (prResult.alreadyExists ? t('pr.result.alreadyExistsTitle') : t('pr.result.successTitle'))
+                        : t('pr.result.failureTitle')}
                     </p>
                     {prResult.error && (
-                      <p className="text-muted-foreground mt-1">{prResult.error}</p>
+                      <p className="text-muted-foreground mt-1">
+                        {t('pr.result.errorPrefix')}: {prResult.error}
+                      </p>
                     )}
                     {prResult.prUrl && (
                       <Button
@@ -600,7 +604,7 @@ export function Worktrees({ projectId }: WorktreesProps) {
                         onClick={() => window.electronAPI.openExternal(prResult.prUrl!)}
                       >
                         <ExternalLink className="h-3.5 w-3.5 mr-1" />
-                        View Pull Request
+                        {t('pr.result.view')}
                       </Button>
                     )}
                   </div>
@@ -617,7 +621,7 @@ export function Worktrees({ projectId }: WorktreesProps) {
                 setPRResult(null);
               }}
             >
-              {prResult ? 'Close' : 'Cancel'}
+              {prResult ? t('pr.actions.close') : t('pr.actions.cancel')}
             </Button>
             {!prResult && (
               <Button
@@ -627,12 +631,12 @@ export function Worktrees({ projectId }: WorktreesProps) {
                 {isCreatingPR ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Creating PR...
+                    {t('pr.actions.creating')}
                   </>
                 ) : (
                   <>
                     <GitPullRequest className="h-4 w-4 mr-2" />
-                    Create PR
+                    {t('pr.actions.create')}
                   </>
                 )}
               </Button>

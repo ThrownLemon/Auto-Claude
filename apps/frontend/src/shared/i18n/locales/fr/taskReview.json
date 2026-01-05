@@ -4,6 +4,13 @@
     "openInbuilt": "Ouvrir dans le terminal intégré",
     "openExternal": "Ouvrir dans le terminal externe"
   },
+  "worktrees": {
+    "errors": {
+      "taskNotFound": "Tâche introuvable pour ce worktree",
+      "failedToLoad": "Échec du chargement des worktrees",
+      "failedToCreate": "Échec de la création de la PR"
+    }
+  },
   "pr": {
     "title": "Créer une pull request",
     "description": "Pousser la branche et créer une pull request GitHub.",
@@ -19,7 +26,8 @@
       "successTitle": "PR créée avec succès",
       "alreadyExistsTitle": "La PR existe déjà",
       "failureTitle": "Échec de création de la PR",
-      "view": "Voir la pull request"
+      "view": "Voir la pull request",
+      "errorPrefix": "Erreur"
     }
   }
 }
